@@ -1,7 +1,10 @@
+from models.Environment import Enviorment
 from utils.map_utils import *
 from models.maps import q_map
+from models.Environment import Enviorment
 import pygame
 import random
+
 COLOR_BLACK = (0, 0, 0)
 COLOR_WHITE = (255, 255, 255)
 COLOR_GREY = (46, 46, 46)
@@ -13,11 +16,12 @@ PIXEL_SIZE = 10
 WIDTH_POSITION = len(q_map[0]) * PIXEL_SIZE
 HEIGHT_POSITION = len(q_map) * PIXEL_SIZE
 
-
+enviorment = Enviorment()
 pygame.init()
 screen = pygame.display.set_mode((WIDTH_POSITION, HEIGHT_POSITION))
 pygame.display.set_caption('Q-Learning')
 screen.fill(COLOR_WHITE)
+clock = pygame.time.Clock()
 
 
 def first_render_screen():
@@ -45,8 +49,6 @@ def printar_mapa():
 
 
 def pygame_start_game():
-    clock = pygame.time.Clock()
-    clock.tick(1)
     x = y = 0
     while q_map[y][x] != 0:
         x = random.randint(1, len(q_map[0]) - 1)
@@ -56,60 +58,46 @@ def pygame_start_game():
     first_render_screen()
     running = True
     while running:
-        movimentou = False
-        while not movimentou:
-            decision = random.randint(0, 3)
-            # up
-            if decision == 0:
-                # print("up")
-                if q_map[y - 1][x] == 0:
-                    q_map[y][x] = 0
-                    pygame.draw.rect(
-                        screen, COLOR_WHITE, (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
-                    y -= 1
-                    q_map[y][x] = 2
-                    pygame.draw.rect(
-                        screen, COLOR_BLUE, (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
-                    movimentou = True
-            # down
-            elif decision == 1:
-                # print("down")
-                if q_map[y + 1][x] == 0:
-                    q_map[y][x] = 0
-                    pygame.draw.rect(
-                        screen, COLOR_WHITE, (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
-                    y += 1
-                    q_map[y][x] = 2
-                    pygame.draw.rect(
-                        screen, COLOR_BLUE, (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
-                    movimentou = True
-            # left
-            elif decision == 2:
-                # print("left")
-                if q_map[y][x - 1] == 0:
-                    q_map[y][x] = 0
-                    pygame.draw.rect(
-                        screen, COLOR_WHITE, (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
-                    x -= 1
-                    q_map[y][x] = 2
-                    pygame.draw.rect(
-                        screen, COLOR_BLUE, (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
-                    movimentou = True
-            # right
-            elif decision == 3:
-                # print("right")
-                if q_map[y][x + 1] == 0:
-                    q_map[y][x] = 0
-                    pygame.draw.rect(
-                        screen, COLOR_WHITE, (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
-                    x += 1
-                    q_map[y][x] = 2
-                    pygame.draw.rect(
-                        screen, COLOR_BLUE, (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
-                    movimentou = True
-            if y == 0 and x == 29:
-                running = False
-            pygame.display.update()
+        # clock.tick(60)
+        decision = enviorment.states[y][x].actions[random.randint(
+            0, len(enviorment.states[y][x].actions) - 1)]
+        if decision.action == 'up':
+            q_map[y][x] = 0
+            pygame.draw.rect(
+                screen, COLOR_WHITE, (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
+            y -= 1
+            q_map[y][x] = 2
+            pygame.draw.rect(
+                screen, COLOR_BLUE, (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
+
+        elif decision.action == 'down':
+            q_map[y][x] = 0
+            pygame.draw.rect(
+                screen, COLOR_WHITE, (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
+            y += 1
+            q_map[y][x] = 2
+            pygame.draw.rect(
+                screen, COLOR_BLUE, (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
+        elif decision.action == 'left':
+            q_map[y][x] = 0
+            pygame.draw.rect(
+                screen, COLOR_WHITE, (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
+            x -= 1
+            q_map[y][x] = 2
+            pygame.draw.rect(
+                screen, COLOR_BLUE, (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
+        elif decision.action == 'right':
+            q_map[y][x] = 0
+            pygame.draw.rect(
+                screen, COLOR_WHITE, (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
+            x += 1
+            q_map[y][x] = 2
+            pygame.draw.rect(
+                screen, COLOR_BLUE, (x*PIXEL_SIZE, y*PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE))
+        
+        if y == 0 and x == 29:
+            running = False
+        pygame.display.update()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
