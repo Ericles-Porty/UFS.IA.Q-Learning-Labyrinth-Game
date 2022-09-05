@@ -3,20 +3,8 @@ from .Actions import Action
 from .maps import q_map
 
 FACTOR = 0.9
-
-
-# if q_map[y-1][x] == 0:
-#                     move_actions.append(
-#                         Action("up", self.calc_q(FACTOR, 0, self.get_max(y-1, x))))
-#                 if q_map[y+1][x] == 0:
-#                     move_actions.append(
-#                         Action("down", self.calc_q(FACTOR, 0, self.get_max(y+1, x))))
-#                 if q_map[y][x-1] == 0:
-#                     move_actions.append(
-#                         Action("left", self.calc_q(FACTOR, 0, self.get_max(y, x-1))))
-#                 if q_map[y][x+1] == 0:
-#                     move_actions.append(
-#                         Action("right", self.calc_q(FACTOR, 0, self.get_max(y, x+1))))
+Y_GOAL = 6
+X_GOAL = 6
 
 class Enviorment():
     def __init__(self):
@@ -69,7 +57,7 @@ class Enviorment():
                         Action("right", 0))
                 temp_states.append(States(x, y, move_actions))
             self.states.append(temp_states)
-        self.states[0][29].r = 10 # goal = States(29, 0)
+        self.states[Y_GOAL][X_GOAL].r = 10 # goal = States(29, 0)
 
     def calc_q(self, factor: float, reward: float, max_q: float):
         return reward + factor * max_q
@@ -89,11 +77,13 @@ class Enviorment():
                     print(j.action, j.q, end=' ')
                 print()
 
+    def best_index_action(self, x, y):
+        max = 0
+        index = 0
+        for i in range(len(self.states[y][x].actions)):
+            if self.states[y][x].actions[i].q >= max:
+                index = i
+                max = self.states[y][x].actions[i].q
+        return  index
 
-# new = Enviorment()
-# new.states[47][53].actions[0].q = 1
-# new.states[47][53].actions[1].q = 1
-# new.states[47][53].actions[2].q = 1
-# new.states[47][53].actions[3].q = 5
-# print(new.get_max(47,53))
 # new.debug()
