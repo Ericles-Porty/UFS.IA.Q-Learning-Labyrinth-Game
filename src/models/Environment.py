@@ -42,6 +42,13 @@ class Enviorment():
                         self.states[y][x].actions[i].q = self.calc_q(
                             FACTOR, self.states[y][x].r, self.get_max(y, x+1))
 
+    def fill_action(self,x,y,action):
+        for i in range(len(self.states[y][x].actions)):
+            if self.states[y][x].actions[i].action == action:
+                self.states[y][x].actions[i].q = self.calc_q(
+                    FACTOR, self.states[y][x].r, self.get_max(y, x))
+        pass
+
     def create_states(self):
         for y in range(0, len(q_map[0])-1):
             temp_states = []
@@ -83,10 +90,10 @@ class Enviorment():
                 print()
 
 
-new = Enviorment()
+# new = Enviorment()
 # new.states[47][53].actions[0].q = 1
 # new.states[47][53].actions[1].q = 1
 # new.states[47][53].actions[2].q = 1
 # new.states[47][53].actions[3].q = 5
 # print(new.get_max(47,53))
-new.debug()
+# new.debug()
