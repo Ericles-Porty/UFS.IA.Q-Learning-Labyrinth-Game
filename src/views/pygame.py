@@ -1,13 +1,18 @@
 from models.Environment import Enviorment, Y_GOAL, X_GOAL, FACTOR
 from models.maps import q_map, question
 import random
-
+# import threading
 extract_mode = int(input("Quer importar os dados do aprendizado anterior? (1 - Sim | 0 - Não): "))
 save_mode = False
 if extract_mode == False:
     save_mode = int(input("Quer salvar os dados do aprendizado ao final? (1 - Sim | 0 - Não): "))
 debug_mode = int(input("Quer ver o debug? (1 - Sim | 0 - Não): "))
 game_mode = int(input("Quer ver a interface gráfica? (1 - Sim | 0 - Não): "))
+
+# thread_option = int(input("1 - Usar Threads\n0 - Sem Threads\n"))
+# if thread_option == 1:
+#     quantidade_threads = int(input("Quantas threads deseja utilizar? "))
+# thread_option = 0
 
 COLOR_BLACK = (0, 0, 0)
 COLOR_WHITE = (255, 255, 255)
@@ -27,6 +32,9 @@ HEIGHT_POSITION = len(q_map) * PIXEL_SIZE
 running = True
 enviorment = Enviorment()
 
+if extract_mode:
+    enviorment.extract_q(question)
+
 if game_mode:
     import pygame
     pygame.init()
@@ -37,15 +45,26 @@ if game_mode:
 
 
 def pygame_start_game():
-    if game_mode:
-        first_render_screen()    
-    
-    if extract_mode:
-        enviorment.extract_q(question)
-    if game_mode:
-        q_learning_pygame()
-    else:
-        q_learning()
+    # if thread_option == 1:
+    #     threads = []
+    #     for _ in range(quantidade_threads):
+    #         if game_mode:
+    #             t = threading.Thread(target=q_learning_pygame)
+    #         else:
+    #             t = threading.Thread(target=q_learning)
+    #         t.daemon = True
+    #         threads.append(t)
+
+    #     for t in threads:
+    #         t.start()
+            
+    #     for t in threads:
+    #         t.join()
+    # else:
+        if game_mode:
+            q_learning_pygame()
+        else:
+            q_learning()
 
 
 def save_q():
@@ -100,6 +119,7 @@ def draw(x,y,color):
 
 
 def q_learning_pygame():
+    first_render_screen()
     x = y = 0
     x,y = generate_random_pos()
     q_map[y][x] = 2
