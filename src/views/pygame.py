@@ -1,6 +1,5 @@
 from models.Environment import Enviorment, Y_GOAL, X_GOAL, FACTOR
 from models.maps import q_map, question
-import pygame
 import random
 
 extract_mode = int(input("Quer importar os dados do aprendizado anterior? (1 - Sim | 0 - Não): "))
@@ -9,11 +8,6 @@ if extract_mode == False:
     save_mode = int(input("Quer salvar os dados do aprendizado ao final? (1 - Sim | 0 - Não): "))
 debug_mode = int(input("Quer ver o debug? (1 - Sim | 0 - Não): "))
 game_mode = int(input("Quer ver a interface gráfica? (1 - Sim | 0 - Não): "))
-# extract_mode , save_mode , debug_mode , game_mode , question = 0 , 1 , 0 , 1 , 2
-# print(extract_mode, save_mode, debug_mode, game_mode, question)
-# exit()
-# debug_mode = False
-# game_mode = False
 
 COLOR_BLACK = (0, 0, 0)
 COLOR_WHITE = (255, 255, 255)
@@ -29,15 +23,17 @@ else:
     PIXEL_SIZE = 15
 WIDTH_POSITION = len(q_map[0]) * PIXEL_SIZE
 HEIGHT_POSITION = len(q_map) * PIXEL_SIZE
+
 running = True
 enviorment = Enviorment()
 
 if game_mode:
+    import pygame
     pygame.init()
     screen = pygame.display.set_mode((WIDTH_POSITION, HEIGHT_POSITION))
-    pygame.display.set_caption('Q-Learning')
+    pygame.display.set_caption('Q-Learning-Labyrinth')
     screen.fill(COLOR_WHITE)
-    clock = pygame.time.Clock()
+    # clock = pygame.time.Clock()
 
 
 def pygame_start_game():
@@ -108,9 +104,14 @@ def q_learning_pygame():
     x,y = generate_random_pos()
     q_map[y][x] = 2
     steps = 0
+    counter = 0
     while running:
+        if counter >= 15000:
+            verifica_convergencia()
+            counter = 0
+        counter += 1
         pygame.display.update()
-        clock.tick(120)
+        # clock.tick(120)
         best_index_action = enviorment.best_index_action(x, y)
         if enviorment.states[y][x].actions[best_index_action].q == 0:
             decision_index = random.randint(0, len(enviorment.states[y][x].actions) - 1)
@@ -154,6 +155,12 @@ def q_learning_pygame():
             q_map[y][x] = 2
             draw(x,y,COLOR_BLUE)
             steps = 0
+        events = pygame.event.get()
+        for event in events:                     
+            if event.type != pygame.QUIT:
+                pass
+            else:
+                exit_game()
     return
 
 def q_learning():
@@ -162,7 +169,13 @@ def q_learning():
     q_map[y][x] = 2
     running = True
     steps = 0
+    counter = 0
     while running:
+        if counter >= 1500:
+            verifica_convergencia()
+            counter = 0
+        counter += 1
+
         best_index_action = enviorment.best_index_action(x, y)
         if enviorment.states[y][x].actions[best_index_action].q == 0:
             decision_index = random.randint(0, len(enviorment.states[y][x].actions) - 1)
@@ -201,22 +214,21 @@ def q_learning():
             x,y = generate_random_pos()
             q_map[y][x] = 2
             steps = 0
+    return
         
-        
-def thread_verificadora():
-    while True:
-        cont = 0
-        for i in range(len(q_map)-1):
-            for j in range(len(q_map[i])-1):
-                if q_map[i][j] == 0:
-                    if enviorment.get_max(i,j) == 0:
-                        cont += 1
-        if cont == 1:
-            print("Aprendeu")
-            if save_mode:
-                save_q()
-                exit()
-                        
-            break
-        else:
-            print("Ainda não aprendeu! Quantidade restante para aprender:",cont)
+def verifica_convergencia():
+    counter = 0
+    for i in range(len(q_map)-1):
+        for j in range(len(q_map[i])-1):
+            if q_map[i][j] == 0:
+                if enviorment.get_max(i,j) == 0:
+                    counter += 1
+    if counter == 1:
+        print("Aprendeu")
+        if save_mode:
+            global running
+            running = False
+            save_q()
+            exit()
+    else:
+        print("Ainda não aprendeu! Quantidade restante para aprender:",counter)
