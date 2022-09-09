@@ -4,10 +4,13 @@ import random
 # import threading
 extract_mode = int(input("Quer importar os dados do aprendizado anterior? (1 - Sim | 0 - Não): "))
 save_mode = False
+game_mode = True
 if extract_mode == False:
     save_mode = int(input("Quer salvar os dados do aprendizado ao final? (1 - Sim | 0 - Não): "))
-debug_mode = int(input("Quer ver o debug? (1 - Sim | 0 - Não): "))
-game_mode = int(input("Quer ver a interface gráfica? (1 - Sim | 0 - Não): "))
+    game_mode = int(input("Quer ver a interface gráfica? (1 - Sim | 0 - Não): "))
+debug_mode = 0
+# debug_mode = int(input("Quer ver o debug? (1 - Sim | 0 - Não): "))
+
 
 # thread_option = int(input("1 - Usar Threads\n0 - Sem Threads\n"))
 # if thread_option == 1:
@@ -126,10 +129,11 @@ def q_learning_pygame():
     steps = 0
     counter = 0
     while running:
-        if counter >= 15000:
-            verifica_convergencia()
-            counter = 0
-        counter += 1
+        if extract_mode == False:
+            if counter >= 15000:
+                verifica_convergencia()
+                counter = 0
+            counter += 1
         pygame.display.update()
         # clock.tick(120)
         best_index_action = enviorment.best_index_action(x, y)
@@ -191,10 +195,11 @@ def q_learning():
     steps = 0
     counter = 0
     while running:
-        if counter >= 1500:
-            verifica_convergencia()
-            counter = 0
-        counter += 1
+        if extract_mode == False:
+            if counter >= 1500:
+                verifica_convergencia()
+                counter = 0
+            counter += 1
 
         best_index_action = enviorment.best_index_action(x, y)
         if enviorment.states[y][x].actions[best_index_action].q == 0:
