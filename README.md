@@ -6,7 +6,7 @@ Jogo com algoritmo de aprendizado por reforço Q-Learning
 
  Entrar na pasta do repositório
  ```cmd
- cd .\Galeraxxx-Search-Escape
+ cd .\Q-Learning-Labyrinth
  ```
  Criar ambiente
  ```cmd
