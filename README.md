@@ -24,5 +24,3 @@ Executar o projeto
 ```cmd 
 python .\src\main.py
 ```
-
-Se estiver utilizando threads tente não dar foco na janela do pygame, minimize todas janelas
