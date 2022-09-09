@@ -1,35 +1,22 @@
 from .States import States
 from .Actions import Action
-from .maps import q_map
+from .maps import q_map, question
+
 import csv
-FACTOR = 0.95
-Y_GOAL = 0
-X_GOAL = 29
+if question == 1:
+    X_GOAL = 6
+    Y_GOAL = 6
+    FACTOR=0.8
+else:
+    Y_GOAL = 0
+    X_GOAL = 29
+    FACTOR = 0.99
 
 class Enviorment():
     def __init__(self):
         self.states = []
         self.q = []
         self.create_states()
-        self.fill_actions()
-
-    def fill_actions(self):
-        for y in range(0, len(self.states)-1):
-            for x in range(0, len(self.states[0])-1):
-                for i in range(len(self.states[y][x].actions)):
-                    if q_map[y][x] == 0:
-                        if self.states[y][x].actions[i].action == "up":
-                            self.states[y][x].actions[i].q = self.calc_q(
-                                FACTOR, self.states[y][x].r, self.get_max(y-1, x))
-                        if self.states[y][x].actions[i].action == "down":
-                            self.states[y][x].actions[i].q = self.calc_q(
-                                FACTOR, self.states[y][x].r, self.get_max(y+1, x))
-                        if self.states[y][x].actions[i].action == "left":
-                            self.states[y][x].actions[i].q = self.calc_q(
-                                FACTOR, self.states[y][x].r, self.get_max(y, x-1))
-                        if self.states[y][x].actions[i].action == "right":
-                            self.states[y][x].actions[i].q = self.calc_q(
-                                FACTOR, self.states[y][x].r, self.get_max(y, x+1))
 
 
     def get_index_by_action(self,y,x, action):
@@ -37,13 +24,13 @@ class Enviorment():
             if self.states[y][x].actions[i].action == action:
                 return i
 
-    def extract_q(self):
-        file = open('q.csv')
+
+    def extract_q(self,question):
+        file = open(f'q{question}.csv')
         csvreader = csv.reader(file, delimiter=';')
         cont = 0
         for row in csvreader:
             if cont == 0:
-                print(row)
                 cont +=1
             else:
                 y = int(row[0])
@@ -52,6 +39,7 @@ class Enviorment():
                 action = row[3]
                 self.states[y][x].actions[self.get_index_by_action(y,x,action)].q = q
         file.close()
+
 
     def create_states(self):
         for y in range(0, len(q_map[0])-1):
@@ -72,17 +60,21 @@ class Enviorment():
                         Action("right", 0))
                 temp_states.append(States(x, y, move_actions))
             self.states.append(temp_states)
-        self.states[Y_GOAL][X_GOAL].r = 10 # goal
+        self.states[Y_GOAL][X_GOAL].r = 10 # goa
+
 
     def calc_q(self, factor: float, reward: float, max_q: float):
         return reward + factor * max_q
 
-    def get_max(self, y, x) -> int:
+
+    def get_max(self, y, x) -> float:
         max = 0
         for i in range(len(self.states[y][x].actions)):
             if self.states[y][x].actions[i].q > max:
                 max = self.states[y][x].actions[i].q
+                # print("Max: ", max)
         return max
+
 
     def debug(self):
         for i in self.states:
@@ -91,6 +83,7 @@ class Enviorment():
                 for j in l.actions:
                     print(j.action, j.q, end=' ')
                 print()
+
 
     def best_index_action(self, x, y):
         max = 0

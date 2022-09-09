@@ -73,4 +73,8 @@ map_2=([
 [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]])
 
 
-q_map = map_2
+question = int(input("Deseja utilizar mapa da questão (1) ou (2)?: "))
+if question == 1:
+    q_map = map_1
+else:
+    q_map = map_2
