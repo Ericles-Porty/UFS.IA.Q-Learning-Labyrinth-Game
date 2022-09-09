@@ -53,8 +53,7 @@ def pygame_start_game():
 
 
 def save_q():
-    if debug_mode:
-        print("Salvando Q")
+    print("Salvando tabela Q")
     with open("q.csv",'w') as f:
         f.write('y;'+'x;'+'q;'+'action\n')
     for i in range(0, len(enviorment.states)):
@@ -65,7 +64,7 @@ def save_q():
                         f.write(str(i)+';'+str(j)+';'+str(enviorment.states[i][j].actions[k].q)+';'+str(enviorment.states[i][j].actions[k].action)+'\n')
                     if debug_mode:
                         print("Q: ",i, j, enviorment.states[i][j].actions[k].q,enviorment.states[i][j].actions[k].action)
-
+    print("Tabela Q salva com sucesso!")
 
 def first_render_screen():
     for y in range(0, len(q_map[0])):
@@ -111,7 +110,7 @@ def q_learning_pygame():
     steps = 0
     while running:
         pygame.display.update()
-        # clock.tick(2)
+        clock.tick(120)
         best_index_action = enviorment.best_index_action(x, y)
         if enviorment.states[y][x].actions[best_index_action].q == 0:
             decision_index = random.randint(0, len(enviorment.states[y][x].actions) - 1)
@@ -215,10 +214,8 @@ def thread_verificadora():
         if cont == 1:
             print("Aprendeu")
             if save_mode:
-                global running
-                running = False
                 save_q()
-                exit_game()
+                exit()
                         
             break
         else:
