@@ -25,4 +25,4 @@ Executar o projeto
 python .\src\main.py
 ```
 
-Se estiver utilizando threads, alterne entre as janelas utilizando alt + tab
+Se estiver utilizando threads tente não dar foco na janela do pygame, minimize todas janelas
