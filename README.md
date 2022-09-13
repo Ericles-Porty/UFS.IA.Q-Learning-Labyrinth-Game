@@ -3,10 +3,13 @@ Jogo com algoritmo de aprendizado por reforço Q-Learning
 
 ## Etapas para executar o projeto
 
-
+ Baixar o repositório
+ ```cmd
+ git clone https://github.com/Ericles-Porty/Q-Learning-Labyrinth
+ ```
  Entrar na pasta do repositório
  ```cmd
- cd .\Galeraxxx-Search-Escape
+ cd .\Q-Learning-Labyrinth
  ```
  Criar ambiente
  ```cmd
